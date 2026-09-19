@@ -6,10 +6,12 @@ import {
   CheckCircle2,
   ChevronRight,
   CloudCog,
+  Code2,
   DatabaseZap,
   ExternalLink,
   FileSearch,
   Github,
+  Layers3,
   Mail,
   Menu,
   MessageSquareCode,
@@ -80,27 +82,29 @@ const demos: Demo[] = [
     kicker: "AI + DATA",
     title: "Vector search with SQL Server",
     description:
-      "Embeddings, semantic retrieval, cosine similarity, and a hybrid SQL + Python implementation around real structured data.",
+      "A practical walkthrough of embeddings, semantic retrieval, cosine similarity, and a hybrid SQL + Python implementation built around real structured data.",
     source: "https://unwhelm.net/assets/VectorDB.mp4",
     duration: "Technical walkthrough",
     bullets: [
-      "Turns approximate search into an inspectable data workflow",
-      "Keeps deterministic SQL filters beside semantic retrieval",
-      "Documents the practical platform gaps instead of hiding them",
+      "Store and query high-dimensional embeddings",
+      "Use semantic retrieval where exact SQL filters break down",
+      "Bridge database capabilities with Python when platform features are incomplete",
+      "Keep deterministic SQL filters beside semantic retrieval",
     ],
   },
   {
     id: "rag",
-    kicker: "LOCAL AI ARCHITECTURE",
+    kicker: "AI + APPLICATION ARCHITECTURE",
     title: "Building a local RAG application",
     description:
-      "Source ingestion, embeddings, nearest-neighbor retrieval, prompt routing, and locally hosted models shown as an application boundary.",
+      "A working retrieval-augmented chatbot: source ingestion, embeddings, nearest-neighbor retrieval, routing, prompt construction, and locally hosted models.",
     source: "https://unwhelm.net/assets/UnwhelmNetChatRAG.mp4",
     duration: "Architecture + demo",
     bullets: [
-      "Separates source content, retrieval, model choice, and response construction",
-      "Supports local and commercial model options behind one contract",
-      "Shows where hardware, latency, and data quality affect the result",
+      "Treat source content and retrieval as explicit application layers",
+      "Keep local and commercial model options behind a controlled boundary",
+      "Show the limits of underpowered infrastructure instead of hiding them",
+      "Separate source content, retrieval, model choice, and response construction",
     ],
   },
   {
@@ -112,7 +116,7 @@ const demos: Demo[] = [
     source: "https://unwhelm.net/assets/unwhelmNodeNet_ContactUs.mp4",
     duration: "End-to-end demo",
     bullets: [
-      "Production-oriented form validation and error handling",
+      "Production-oriented form handling, validation, and error handling",
       "Credential boundaries and environment separation",
       "Microsoft Graph integration for reliable delivery",
     ],
@@ -126,7 +130,7 @@ const demos: Demo[] = [
     source: "https://unwhelm.net/assets/net-core-api-full.mp4",
     duration: "51:52",
     bullets: [
-      "REST API design and service contracts",
+      "REST API design, service contracts, and integration boundaries",
       "Authentication and database connectivity",
       "Practical automation patterns for business systems",
     ],
@@ -204,26 +208,52 @@ const serviceLanes = [
   {
     icon: Network,
     title: "Systems integration",
-    fit: "When two or more tools own pieces of the same workflow.",
+    fit: "Connect APIs, databases, and SaaS platforms with clear ownership, translation, and failure boundaries.",
     bullets: ["API contracts", "SaaS adapters", "Identity and permissions", "Failure handling"],
   },
   {
     icon: BrainCircuit,
     title: "AI-enabled applications",
-    fit: "When AI should assist the workflow without owning the truth.",
+    fit: "Use LLMs, retrieval, and agents where they help while keeping state, permissions, and business rules deterministic.",
     bullets: ["RAG and semantic search", "Agent boundaries", "Human review", "Deterministic state"],
   },
   {
     icon: DatabaseZap,
     title: "Data and automation",
-    fit: "When reporting, ETL, cleanup, or repeatable work is still manual.",
+    fit: "Build practical ETL, reporting, and workflow automation around the systems a business already depends on.",
     bullets: ["SQL pipelines", "Document workflows", "Scheduled jobs", "Operational dashboards"],
   },
   {
     icon: CloudCog,
     title: "Cloud and infrastructure",
-    fit: "When the app has to survive deployment, security, and support.",
-    bullets: ["Linux and Windows hosting", "CI/CD", "VPS and cloud", "Monitoring handoff"],
+    fit: "Deploy and operate applications across Linux, Windows, VPS, containers, cloud, and hybrid on-prem environments.",
+    bullets: ["Linux and Windows hosting", "CI/CD", "VPS, cloud, and on-prem handoff", "Monitoring handoff"],
+  },
+];
+
+const capabilities = [
+  "Working software",
+  "API integrations",
+  "AI under application controls",
+  "SQL + data pipelines",
+  "Linux + Windows deployment",
+];
+
+const operatingPrinciples = [
+  {
+    icon: Code2,
+    title: "Real code",
+    text: "Not slideware",
+  },
+  {
+    icon: Layers3,
+    title: "Clear ownership",
+    text: "Truth lives somewhere",
+  },
+  {
+    icon: BrainCircuit,
+    title: "AI where useful",
+    text: "State stays deterministic",
   },
 ];
 
@@ -236,18 +266,23 @@ const outcomes = [
 const engagement = [
   {
     number: "01",
-    title: "Integration diagnosis",
-    text: "Map systems, data ownership, authentication, failure points, and the smallest valuable automation path.",
+    title: "Discover the real workflow",
+    text: "Start with the business process, source systems, ownership rules, and constraints before choosing technology.",
   },
   {
     number: "02",
-    title: "Proof build",
-    text: "Ship a narrow working slice that uses real APIs, real data constraints, and a deployment target.",
+    title: "Design the boundary",
+    text: "Define what each system owns, how data is translated, where authentication lives, and what happens when dependencies fail.",
   },
   {
     number: "03",
-    title: "Production hardening",
-    text: "Add validation, observability, documentation, handoff, and the boring pieces that keep software alive.",
+    title: "Build something demonstrable",
+    text: "Move from architecture to a working integration, application, or prototype that stakeholders can actually inspect.",
+  },
+  {
+    number: "04",
+    title: "Explain it at the right altitude",
+    text: "Discuss outcomes with business leaders, contracts with architects, and implementation details with engineers.",
   },
 ];
 
@@ -410,9 +445,14 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
             </div>
             <h1>Build the system between the systems.</h1>
             <p className="hero-lead">
-              UnwhelmNet helps growing businesses turn disconnected software, manual
-              operations, and AI experiments into working applications with clear
-              ownership, integration boundaries, and deployment reality.
+              Senior software and integration engineering for businesses that need APIs,
+              automation, AI-assisted applications, and infrastructure to work as one
+              coherent system.
+            </p>
+            <p className="hero-support">
+              UnwhelmNet is hands-on engineering: discovery, architecture, implementation,
+              deployment, troubleshooting, and technical explanation without the layers of
+              a large consultancy.
             </p>
             <div className="hero-actions">
               <button className="button button-primary" onClick={() => navigate("proof")}>
@@ -425,9 +465,9 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
               </button>
             </div>
             <div className="hero-notes">
-              <span><ShieldCheck size={16} /> AI under deterministic guardrails</span>
-              <span><Workflow size={16} /> Workflow-first architecture</span>
-              <span><ServerCog size={16} /> Cloud, VPS, Windows, and Linux delivery</span>
+              <span><ShieldCheck size={16} /> Deterministic guardrails around AI</span>
+              <span><Workflow size={16} /> Integration-first architecture</span>
+              <span><ServerCog size={16} /> Cloud + on-prem deployment</span>
             </div>
           </div>
 
@@ -464,11 +504,19 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
             </div>
             <div className="architecture-flow" aria-label="Workflow path">
               <span>Workflow</span><ChevronRight size={16} />
-              <span>Contract</span><ChevronRight size={16} />
-              <span>Automation</span><ChevronRight size={16} />
+              <span>API + Rules</span><ChevronRight size={16} />
+              <span>Adapters</span><ChevronRight size={16} />
               <span>Handoff</span>
             </div>
           </aside>
+        </div>
+      </section>
+
+      <section className="capability-strip" aria-label="Capabilities">
+        <div className="container capability-grid">
+          {capabilities.map((capability) => (
+            <span key={capability}>{capability}</span>
+          ))}
         </div>
       </section>
 
@@ -504,6 +552,30 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
                 </span>
                 <ArrowRight size={17} />
               </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="principles-section" aria-label="Operating principles">
+        <div className="container principles-grid">
+          <div className="section-heading">
+            <div className="eyebrow eyebrow-dark">OPERATING PRINCIPLES</div>
+            <h2>How the work is approached.</h2>
+            <p>
+              The original promise still matters: practical engineering, explicit
+              ownership, and AI bounded by application rules.
+            </p>
+          </div>
+          <div className="principle-list">
+            {operatingPrinciples.map((principle) => (
+              <article key={principle.title}>
+                <principle.icon size={19} />
+                <div>
+                  <h3>{principle.title}</h3>
+                  <p>{principle.text}</p>
+                </div>
+              </article>
             ))}
           </div>
         </div>
@@ -577,6 +649,16 @@ function ProofPage({
             </div>
           </div>
         </div>
+
+        <div className="section-footnote">
+          <span>
+            These players stream the existing UnwhelmNet video assets while this
+            route-based redesign is staged.
+          </span>
+          <a href="https://unwhelm.net/videos" target="_blank" rel="noreferrer">
+            Open the full video library <ExternalLink size={14} />
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -590,8 +672,10 @@ function WorkPage() {
           <div className="eyebrow eyebrow-dark"><Sparkles size={15} /> SELECTED WORK</div>
           <h1>Case studies with the problem left in.</h1>
           <p>
-            A stronger services site does not just list technologies. It shows the
-            messy middle: what was broken, what shipped, and what evidence a buyer can inspect.
+            Public projects are presented as evidence of how systems are modeled,
+            integrated, constrained, and operated, not as a list of technologies.
+            The case studies keep the messy middle visible: what was broken, what shipped,
+            and what evidence a buyer can inspect.
           </p>
         </div>
 
@@ -648,8 +732,9 @@ function ServicesPage() {
             <h1>Not a stack. A set of boundary problems.</h1>
           </div>
           <p>
-            Each service lane explains when to call, what gets designed, and where
-            UnwhelmNet is strongest.
+            Technical capability, stated plainly. The focus is not selling a stack;
+            it is making independently designed systems cooperate reliably enough
+            to support the business workflow.
           </p>
         </div>
 
@@ -696,7 +781,8 @@ function ApproachPage() {
             <div className="eyebrow"><Route size={15} /> ENGAGEMENT MODEL</div>
             <h1>Clarity before custom work gets expensive.</h1>
             <p>
-              The work starts by making ownership, system boundaries, and business value explicit.
+              From discovery to demo, the work has to move between business requirements,
+              architecture, implementation, and explanation without losing the thread.
             </p>
           </div>
 
@@ -740,17 +826,18 @@ function AboutPage() {
       <div className="container about-grid">
         <div>
           <div className="eyebrow eyebrow-dark">EDMUND LANDGRAF / UNWHELMNET</div>
-          <h1>Direct access to the engineer doing the work.</h1>
+          <h1>Direct technical ownership.</h1>
         </div>
         <div className="about-copy">
           <p className="about-lead">
-            UnwhelmNet is for organizations that need someone who can talk to the
-            business, inspect the systems, write the code, and explain what changed.
+            UnwhelmNet is built around direct access to the engineer doing the
+            discovery, architecture, and implementation.
           </p>
           <p>
             The work spans modern web applications, APIs, SQL and data pipelines,
-            SaaS integration, AI-assisted systems, Linux and Windows infrastructure,
-            and the operational details required to get software deployed.
+            third-party SaaS integration, AI-assisted systems, Linux and Windows
+            infrastructure, and the operational details required to get those systems
+            deployed.
           </p>
           <p>
             The promise is deliberately practical: understand the workflow, build the
@@ -776,12 +863,12 @@ function ContactPage() {
     <section className="contact-section contact-page">
       <div className="container contact-grid">
         <div>
-          <div className="eyebrow">START WITH THE WORKFLOW</div>
+          <div className="eyebrow">START WITH THE PROBLEM</div>
           <h1>Have systems that should work together?</h1>
           <p>
-            Send the platforms involved, the workflow that breaks, and what a good
-            first result would look like. A first conversation can stay business-level
-            or go straight into APIs and architecture.
+            Describe the workflow, the platforms involved, and where the current
+            process breaks down. The first conversation can stay at the business
+            level or go straight into APIs and architecture.
           </p>
         </div>
         <div className="contact-card">

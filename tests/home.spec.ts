@@ -16,6 +16,12 @@ test("homepage is a focused route entry point", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: /Watch proof of work/i })).toBeVisible();
   await expect(page.getByText("SOFTWARE • AI • AUTOMATION • CLOUD", { exact: true })).toBeVisible();
+  await expect(page.getByText(/hands-on engineering: discovery, architecture, implementation/i)).toBeVisible();
+  await expect(page.getByText("Cloud + on-prem deployment")).toBeVisible();
+  await expect(page.getByText("Working software")).toBeVisible();
+  await expect(page.getByText("AI under application controls")).toBeVisible();
+  await expect(page.getByText("Real code")).toBeVisible();
+  await expect(page.getByText("Truth lives somewhere")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Choose the evidence trail you want to inspect." })).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "Watch the engineering, then judge the fit." })).toHaveCount(0);
@@ -49,6 +55,7 @@ test("primary navigation opens separate pages instead of anchors", async ({ page
   await page.getByRole("link", { name: "Approach" }).click();
   await expect(page).toHaveURL(/\/approach$/);
   await expect(page.getByRole("heading", { level: 1, name: "Clarity before custom work gets expensive." })).toBeVisible();
+  await expect(page.getByText("Explain it at the right altitude")).toBeVisible();
 });
 
 test("technical proof links are inspectable and externally targeted", async ({ page }) => {
@@ -75,6 +82,10 @@ test("video demo selector swaps the working source", async ({ page }) => {
 
   const video = page.locator("video").first();
   await expect(video).toHaveAttribute("src", expectedVideos[0]);
+  await expect(page.getByRole("link", { name: /Open the full video library/i })).toHaveAttribute(
+    "href",
+    "https://unwhelm.net/videos"
+  );
 
   await page.getByRole("tab", { name: /Building a local RAG application/i }).click();
   await expect(video).toHaveAttribute("src", expectedVideos[1]);

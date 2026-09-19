@@ -252,6 +252,14 @@ a {
   line-height: 1.62;
 }
 
+.hero-support {
+  max-width: 610px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.62;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -491,6 +499,35 @@ a {
   border-bottom: 1px solid var(--line);
 }
 
+.capability-strip {
+  background: #101820;
+  color: #eff8f6;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.capability-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-height: 78px;
+}
+
+.capability-grid span {
+  display: flex;
+  align-items: center;
+  padding: 18px 16px;
+  border-left: 1px solid rgba(255,255,255,0.1);
+  color: #dce7e5;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.capability-grid span:last-child {
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+
 .score-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -574,6 +611,64 @@ a {
   background:
     linear-gradient(90deg, transparent calc(50% - 1px), rgba(12,17,22,0.09) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
     #f4efe5;
+}
+
+.principles-section {
+  padding: 68px 0 82px;
+  background:
+    linear-gradient(rgba(22, 27, 34, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 27, 34, 0.035) 1px, transparent 1px),
+    #fffaf0;
+  background-size: 34px 34px;
+  border-top: 1px solid var(--line);
+}
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(360px, 1.2fr);
+  gap: 42px;
+  align-items: start;
+}
+
+.principles-section .section-heading {
+  margin-bottom: 0;
+}
+
+.principle-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.principle-list article {
+  min-height: 170px;
+  padding: 20px;
+  border: 1px solid #d7caba;
+  border-top: 5px solid var(--orange);
+  border-radius: var(--radius);
+  background: #fffdf6;
+}
+
+.principle-list svg {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 8px;
+  color: #101820;
+  background: #f7d276;
+}
+
+.principle-list h3 {
+  margin: 18px 0 7px;
+  color: var(--ink-strong);
+  font-family: Sora, sans-serif;
+  font-size: 18px;
+}
+
+.principle-list p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
 }
 
 .home-directory .section-heading {
@@ -745,6 +840,34 @@ a {
   border-radius: var(--radius);
   background: #fffdf6;
   box-shadow: var(--shadow);
+}
+
+.section-footnote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px dashed #cfc2b1;
+  border-radius: var(--radius);
+  background: #fffdf6;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.section-footnote a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-strong);
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.section-footnote a:hover {
+  color: var(--orange);
 }
 
 .player-frame {
@@ -1324,7 +1447,8 @@ footer {
 @media (max-width: 1040px) {
   .hero-grid,
   .approach-grid,
-  .intelligence-grid {
+  .intelligence-grid,
+  .principles-grid {
     grid-template-columns: 1fr;
     gap: 44px;
   }
@@ -1341,6 +1465,15 @@ footer {
 
   .score-grid {
     grid-template-columns: 1fr;
+  }
+
+  .capability-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .capability-grid span:nth-child(even),
+  .capability-grid span:last-child {
+    border-right: 1px solid rgba(255,255,255,0.1);
   }
 
   .score-card,
@@ -1363,7 +1496,8 @@ footer {
 
   .services-grid,
   .directory-grid,
-  .lesson-list {
+  .lesson-list,
+  .principle-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1459,8 +1593,22 @@ footer {
   .demo-list,
   .services-grid,
   .directory-grid,
-  .lesson-list {
+  .lesson-list,
+  .principle-list {
     grid-template-columns: 1fr;
+  }
+
+  .capability-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .capability-grid span {
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .section-footnote {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .directory-card {
