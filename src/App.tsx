@@ -255,8 +255,8 @@ function App() {
                 SOFTWARE • AI • AUTOMATION • CLOUD
               </div>
               <h1>
-                Systems that have to
-                <span> work together.</span>
+                Unwhelm your tech stack.
+                <span>Make the systems work together.</span>
               </h1>
               <p className="hero-lead">
                 Senior software and integration engineering for businesses that need APIs,
