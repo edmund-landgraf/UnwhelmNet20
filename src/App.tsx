@@ -431,26 +431,42 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
             </div>
           </div>
 
-          <aside className="operator-panel" aria-label="Project fit summary">
+          <aside className="operator-panel system-board" aria-label="Project fit summary">
             <div className="panel-topline">
-              <span>BEST FIT</span>
+              <span>LIVE BOUNDARY MAP</span>
               <TerminalSquare size={18} />
             </div>
-            <h2>When your business process spans too many tools.</h2>
-            <div className="fit-list">
-              <div><CheckCircle2 size={18} /> SaaS platforms need to exchange reliable data.</div>
-              <div><CheckCircle2 size={18} /> AI should help without becoming the system of record.</div>
-              <div><CheckCircle2 size={18} /> Reporting depends on cleanup, ETL, or database work.</div>
-              <div><CheckCircle2 size={18} /> A prototype needs production-shaped hardening.</div>
+            <div className="system-map" aria-hidden="true">
+              <span className="system-node node-source">SaaS</span>
+              <span className="system-node node-data">SQL</span>
+              <span className="system-node node-core">API</span>
+              <span className="system-node node-ai">AI</span>
+              <span className="system-node node-deploy">Deploy</span>
+              <span className="system-path path-one" />
+              <span className="system-path path-two" />
+              <span className="system-path path-three" />
+              <span className="system-path path-four" />
             </div>
-            <div className="architecture-flow">
-              <span>Workflow</span>
-              <ChevronRight size={16} />
-              <span>API</span>
-              <ChevronRight size={16} />
-              <span>Automation</span>
-              <ChevronRight size={16} />
-              <span>Deployment</span>
+            <h2>When the workflow is real, but the system is scattered.</h2>
+            <div className="signal-feed">
+              <div>
+                <span>01 / translate</span>
+                <strong>APIs, files, forms, and databases agree on meaning.</strong>
+              </div>
+              <div>
+                <span>02 / govern</span>
+                <strong>AI assists the work without becoming the source of truth.</strong>
+              </div>
+              <div>
+                <span>03 / ship</span>
+                <strong>Automation survives credentials, failures, logs, and deployment.</strong>
+              </div>
+            </div>
+            <div className="architecture-flow" aria-label="Workflow path">
+              <span>Workflow</span><ChevronRight size={16} />
+              <span>Contract</span><ChevronRight size={16} />
+              <span>Automation</span><ChevronRight size={16} />
+              <span>Handoff</span>
             </div>
           </aside>
         </div>
@@ -471,19 +487,21 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
       <section className="home-directory" aria-label="Site sections">
         <div className="container">
           <div className="section-heading">
-            <div className="eyebrow eyebrow-dark">SEPARATE PAGES</div>
-            <h2>Choose the part of the work you want to inspect.</h2>
+            <div className="eyebrow eyebrow-dark">ROUTE BOARD</div>
+            <h2>Choose the evidence trail you want to inspect.</h2>
             <p>
-              The home page stays focused. Proof, work, services, and approach now
-              live on their own routes instead of hiding farther down a single page.
+              The site now behaves like the work: distinct surfaces with clear
+              boundaries, visible proof, and no long-scroll scavenger hunt.
             </p>
           </div>
           <div className="directory-grid">
             {pageLinks.map((link) => (
               <button className="directory-card" key={link.page} onClick={() => navigate(link.page)}>
                 <span className="directory-icon"><link.icon size={22} /></span>
-                <strong>{link.label}</strong>
-                <span>{link.text}</span>
+                <span className="directory-copy">
+                  <strong>{link.label}</strong>
+                  <span>{link.text}</span>
+                </span>
                 <ArrowRight size={17} />
               </button>
             ))}

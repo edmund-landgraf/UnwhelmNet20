@@ -16,7 +16,7 @@ test("homepage is a focused route entry point", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: /Watch proof of work/i })).toBeVisible();
   await expect(page.getByText("SOFTWARE • AI • AUTOMATION • CLOUD", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Choose the part of the work you want to inspect." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose the evidence trail you want to inspect." })).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "Watch the engineering, then judge the fit." })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Case studies with the problem left in." })).toHaveCount(0);
