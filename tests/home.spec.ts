@@ -15,7 +15,7 @@ test("proof-first homepage has the recruiter-facing story", async ({ page }) => 
   ).toBeVisible();
 
   await expect(page.getByRole("button", { name: /Watch the work/i })).toBeVisible();
-  await expect(page.getByText("SOFTWARE • AI • AUTOMATION • CLOUD")).toBeVisible();
+  await expect(page.getByText("SOFTWARE • AI • AUTOMATION • CLOUD", { exact: true })).toBeVisible();
 
   await expect(page.getByRole("heading", { name: "Demonstrations before claims." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Architecture you can inspect." })).toBeVisible();
