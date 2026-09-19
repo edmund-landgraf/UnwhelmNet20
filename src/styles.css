@@ -1048,12 +1048,14 @@ a {
 }
 
 .approach-section {
-  color: white;
+  color: var(--ink);
   background:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-    #111827;
-  background-size: 28px 28px;
+    linear-gradient(rgba(22, 27, 34, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 27, 34, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 88% 8%, rgba(8, 127, 140, 0.12), transparent 28%),
+    #f4efe5;
+  background-size: 34px 34px, 34px 34px, auto, auto;
+  border-bottom: 1px solid var(--line);
 }
 
 .approach-grid {
@@ -1070,11 +1072,11 @@ a {
 .approach-section .section-heading h1,
 .approach-section .section-heading h2,
 .approach-section .section-heading p {
-  color: white;
+  color: var(--ink-strong);
 }
 
 .approach-section .section-heading p {
-  color: #c7d6d4;
+  color: var(--muted);
 }
 
 .engagement-list {
@@ -1087,14 +1089,17 @@ a {
   grid-template-columns: 58px 1fr;
   gap: 18px;
   padding: 22px;
-  border: 1px solid rgba(255,255,255,0.14);
-  border-left: 4px solid #f7d276;
+  border: 1px solid #d7caba;
+  border-left: 5px solid var(--orange);
   border-radius: var(--radius);
-  background: rgba(255,255,255,0.06);
+  background:
+    linear-gradient(90deg, rgba(255,229,212,0.45), transparent 34%),
+    #fffdf6;
+  box-shadow: 0 14px 30px rgba(42, 34, 23, 0.06);
 }
 
 .engagement-list span {
-  color: #8ee8df;
+  color: var(--orange);
   font-family: "JetBrains Mono", monospace;
   font-size: 13px;
   font-weight: 800;
@@ -1102,13 +1107,14 @@ a {
 
 .engagement-list h2 {
   margin: 0 0 8px;
+  color: var(--ink-strong);
   font-family: Sora, sans-serif;
   font-size: 20px;
 }
 
 .engagement-list p {
   margin: 0;
-  color: #c9d9d6;
+  color: var(--muted);
   line-height: 1.58;
 }
 
