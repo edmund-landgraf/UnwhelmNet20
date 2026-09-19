@@ -7,32 +7,52 @@ const expectedVideos = [
   "https://unwhelm.net/assets/net-core-api-full.mp4",
 ];
 
-test("proof-first homepage has the recruiter-facing story", async ({ page }) => {
+test("homepage is a focused route entry point", async ({ page }) => {
   await page.goto("/");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: /Unwhelm your tech stack/i })
+    page.getByRole("heading", { level: 1, name: /Build the system between the systems/i })
   ).toBeVisible();
 
-  await expect(page.getByRole("button", { name: /Watch the work/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Watch proof of work/i })).toBeVisible();
   await expect(page.getByText("SOFTWARE • AI • AUTOMATION • CLOUD", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose the part of the work you want to inspect." })).toBeVisible();
 
-  await expect(page.getByRole("heading", { name: "Demonstrations before claims." })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Architecture you can inspect." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Watch the engineering, then judge the fit." })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Case studies with the problem left in." })).toHaveCount(0);
 
-  await expect(page.getByText("Adventure Maker by Act (AMBA)")).toBeVisible();
-  await expect(page.getByText("AMBA → Owlbear Rodeo")).toBeVisible();
-  await expect(page.getByText("Property-management systems integration")).toBeVisible();
-
-  await expect(page.getByText("Serving 50+ SMBs")).toHaveCount(0);
-  await expect(page.getByText("Greenfield Properties")).toHaveCount(0);
-  await expect(page.getByText("Pacific Coast Rentals")).toHaveCount(0);
+  await expect(page.locator(".directory-card").filter({ hasText: "Proof of work" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Selected work/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Proof" })).toHaveAttribute("href", "/proof");
+  await expect(page.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/work");
+  await expect(page.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/services");
+  await expect(page.getByRole("link", { name: "Approach" })).toHaveAttribute("href", "/approach");
 
   await page.screenshot({ path: "test-results/home-desktop.png", fullPage: true });
 });
 
-test("technical proof links are inspectable and externally targeted", async ({ page }) => {
+test("primary navigation opens separate pages instead of anchors", async ({ page }) => {
   await page.goto("/");
+
+  await page.getByRole("link", { name: "Proof" }).click();
+  await expect(page).toHaveURL(/\/proof$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Watch the engineering, then judge the fit." })).toBeVisible();
+
+  await page.getByRole("link", { name: "Work" }).click();
+  await expect(page).toHaveURL(/\/work$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Case studies with the problem left in." })).toBeVisible();
+
+  await page.getByRole("link", { name: "Services" }).click();
+  await expect(page).toHaveURL(/\/services$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Not a stack. A set of boundary problems." })).toBeVisible();
+
+  await page.getByRole("link", { name: "Approach" }).click();
+  await expect(page).toHaveURL(/\/approach$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Clarity before custom work gets expensive." })).toBeVisible();
+});
+
+test("technical proof links are inspectable and externally targeted", async ({ page }) => {
+  await page.goto("/work");
 
   const amba = page.getByRole("link", { name: "Live application" });
   await expect(amba).toHaveAttribute("href", "https://amba.unwhelm.online");
@@ -44,13 +64,14 @@ test("technical proof links are inspectable and externally targeted", async ({ p
     "https://github.com/edmund-landgraf/AdventureMakerByAct"
   );
 
+  await page.goto("/services");
   await expect(
     page.getByRole("link", { name: /Review integration documents/i })
   ).toHaveAttribute("href", "https://unwhelm.net/documents");
 });
 
 test("video demo selector swaps the working source", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/proof");
 
   const video = page.locator("video").first();
   await expect(video).toHaveAttribute("src", expectedVideos[0]);
@@ -76,15 +97,19 @@ test("existing production video assets are reachable", async ({ request }) => {
   }
 });
 
-test("mobile navigation and core CTA remain usable", async ({ page }) => {
+test("mobile navigation routes to separate pages", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
 
   await page.getByRole("button", { name: "Toggle navigation" }).click();
   const mobileNav = page.getByRole("navigation", { name: "Mobile navigation" });
-  await expect(mobileNav.getByRole("button", { name: "Demos" })).toBeVisible();
-  await expect(mobileNav.getByRole("button", { name: "Work" })).toBeVisible();
-  await expect(mobileNav.getByRole("button", { name: "Contact" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "Proof" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "Work" })).toBeVisible();
+  await expect(mobileNav.getByRole("link", { name: "Start a project" })).toBeVisible();
 
-  await page.screenshot({ path: "test-results/home-mobile.png", fullPage: true });
+  await mobileNav.getByRole("link", { name: "Work" }).click();
+  await expect(page).toHaveURL(/\/work$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Case studies with the problem left in." })).toBeVisible();
+
+  await page.screenshot({ path: "test-results/work-mobile.png", fullPage: true });
 });
