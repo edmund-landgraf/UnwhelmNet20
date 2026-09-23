@@ -62,6 +62,19 @@ test("primary navigation opens separate pages instead of anchors", async ({ page
   await expect(page.getByRole("heading", { level: 1, name: "Documents rebuilt into the new site." })).toBeVisible();
   await expect(page.getByText("Propertyware and AppFolio integration notes")).toBeVisible();
 
+  await page.goto("/about");
+  const technicalDocuments = page.getByRole("link", { name: "Technical documents" });
+  await expect(technicalDocuments).toHaveAttribute("href", "/documents");
+  await technicalDocuments.click();
+  await expect(page).toHaveURL(/\/documents$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Documents rebuilt into the new site." })).toBeVisible();
+
+  await page.goto("/git");
+  await expect(page.getByRole("heading", { level: 1, name: "Public repos, selected for inspection." })).toBeVisible();
+  await expect(page.getByText("Adventure Maker by Act")).toBeVisible();
+  await expect(page.getByText("AMBA to Owlbear Rodeo")).toBeVisible();
+  await expect(page.getByText("UnwhelmNet 2.0")).toBeVisible();
+
   await page.getByRole("link", { name: "Approach" }).click();
   await expect(page).toHaveURL(/\/approach$/);
   await expect(page.getByRole("heading", { level: 1, name: "Clarity before custom work gets expensive." })).toBeVisible();
@@ -82,9 +95,11 @@ test("technical proof links are inspectable and externally targeted", async ({ p
   );
 
   await page.goto("/services");
-  await expect(
-    page.getByRole("link", { name: /Review public work/i })
-  ).toHaveAttribute("href", "https://github.com/edmund-landgraf");
+  const curatedGit = page.getByRole("link", { name: /Review curated Git page/i });
+  await expect(curatedGit).toHaveAttribute("href", "/git");
+  await curatedGit.click();
+  await expect(page).toHaveURL(/\/git$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Public repos, selected for inspection." })).toBeVisible();
 });
 
 test("video demo selector swaps the working source", async ({ page }) => {
@@ -131,7 +146,7 @@ test("mobile navigation routes to separate pages", async ({ page }) => {
 });
 
 test("rebuilt parity routes avoid old-site page links", async ({ page }) => {
-  for (const route of ["/", "/real-estate", "/ai-solutions", "/ai-economics", "/web-design", "/platforms", "/case-studies", "/clients", "/diagramming", "/technical-skills", "/proof", "/videos", "/work", "/services", "/documents", "/approach", "/about", "/contact"]) {
+  for (const route of ["/", "/real-estate", "/ai-solutions", "/ai-economics", "/web-design", "/platforms", "/case-studies", "/clients", "/diagramming", "/technical-skills", "/proof", "/videos", "/work", "/services", "/documents", "/git", "/approach", "/about", "/contact"]) {
     await page.goto(route);
     const oldSitePageLinks = page.locator('a[href^="https://unwhelm.net"]:not([href*="/assets/"])');
     await expect(oldSitePageLinks).toHaveCount(0);

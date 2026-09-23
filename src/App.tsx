@@ -28,7 +28,7 @@ import {
   X,
 } from "lucide-react";
 
-type Page = "home" | "real-estate" | "ai-solutions" | "ai-economics" | "web-design" | "platforms" | "case-studies" | "clients" | "diagramming" | "technical-skills" | "proof" | "videos" | "work" | "services" | "documents" | "approach" | "about" | "contact";
+type Page = "home" | "real-estate" | "ai-solutions" | "ai-economics" | "web-design" | "platforms" | "case-studies" | "clients" | "diagramming" | "technical-skills" | "proof" | "videos" | "work" | "services" | "documents" | "git" | "approach" | "about" | "contact";
 
 type Demo = {
   id: string;
@@ -73,6 +73,7 @@ const routeByPage: Record<Page, string> = {
   work: "/work",
   services: "/services",
   documents: "/documents",
+  git: "/git",
   approach: "/approach",
   about: "/about",
   contact: "/contact",
@@ -209,7 +210,7 @@ const work: WorkItem[] = [
     ],
     proof: "Domain-specific integration experience and a broader engineering portfolio.",
     links: [
-      { label: "Portfolio", href: "https://github.com/edmund-landgraf", icon: "github" },
+      { label: "Curated Git page", href: "/git", icon: "github" },
     ],
   },
 ];
@@ -235,6 +236,35 @@ const documentLibrary = [
     summary:
       "A place for the rebuilt API, deployment, authentication, and cloud/on-prem handoff material that used to live on supporting pages.",
     bullets: ["REST service boundaries", "Authentication and credentials", "Linux, Windows, VPS, and hybrid deployment"],
+  },
+];
+const gitSelections = [
+  {
+    eyebrow: "STRUCTURED CONTENT PLATFORM",
+    title: "Adventure Maker by Act",
+    summary:
+      "A full-stack application for durable adventure content, publishing workflows, integrations, and controlled AI-assisted authoring.",
+    repo: "edmund-landgraf/AdventureMakerByAct",
+    href: "https://github.com/edmund-landgraf/AdventureMakerByAct",
+    details: ["React and TypeScript product surface", "Express, PostgreSQL, Prisma, and APIs", "Publishing and VTT integration boundaries"],
+  },
+  {
+    eyebrow: "VTT INTEGRATION",
+    title: "AMBA to Owlbear Rodeo",
+    summary:
+      "A companion extension that moves structured AMBA data into Owlbear Rodeo while respecting each system's ownership boundary.",
+    repo: "edmund-landgraf/Amba-Owlbear-Extension",
+    href: "https://github.com/edmund-landgraf/Amba-Owlbear-Extension",
+    details: ["Owlbear SDK integration", "Stable metadata for import behavior", "Visual validation around table state"],
+  },
+  {
+    eyebrow: "SITE REDESIGN",
+    title: "UnwhelmNet 2.0",
+    summary:
+      "The proof-first redesign for this site: route parity, technical demos, document surfaces, and a clearer portfolio architecture.",
+    repo: "edmund-landgraf/UnwhelmNet20",
+    href: "https://github.com/edmund-landgraf/UnwhelmNet20",
+    details: ["React, TypeScript, and Vite", "Rebuilt legacy route parity", "Hand-authored 2.0 design system"],
   },
 ];
 const serviceLanes = [
@@ -579,6 +609,7 @@ const pageLinks: PageLink[] = [
   { page: "technical-skills", label: "Technical Skills", text: "Application, integration, AI, data, cloud, Linux, Windows, and VPS capability map.", icon: TerminalSquare },
   { page: "videos", label: "Videos", text: "The rebuilt page for technical walkthroughs that used to live under the old video route.", icon: Video },
   { page: "documents", label: "Documents", text: "Rebuilt technical-document routes for property management, AI, APIs, and deployment notes.", icon: FileSearch },
+  { page: "git", label: "Git", text: "A curated in-app view of public repos, architecture notes, and inspectable implementation evidence.", icon: Github },
   { page: "contact", label: "Contact Us", text: "The original intake flow reskinned for the redesign, ready for endpoint wiring.", icon: Mail },
 ];
 
@@ -680,11 +711,12 @@ function App() {
             description="The old video-library route is rebuilt here with working technical walkthroughs for AI, data, integration, APIs, and deployment."
           />
         )}
-        {page === "work" && <WorkPage />}
-        {page === "services" && <ServicesPage />}
+        {page === "work" && <WorkPage navigate={navigate} />}
+        {page === "services" && <ServicesPage navigate={navigate} />}
         {page === "documents" && <DocumentsPage />}
+        {page === "git" && <GitPage />}
         {page === "approach" && <ApproachPage />}
-        {page === "about" && <AboutPage />}
+        {page === "about" && <AboutPage navigate={navigate} />}
         {page === "contact" && <ContactPage />}
       </main>
 
@@ -695,7 +727,7 @@ function App() {
             <p>Custom Software • AI • Automation • Cloud Infrastructure</p>
           </div>
           <div className="footer-links">
-            <a href="https://github.com/edmund-landgraf" target="_blank" rel="noreferrer">GitHub</a>
+            <a {...routeLink("git")}>Git</a>
             <a href="https://amba.unwhelm.online" target="_blank" rel="noreferrer">AMBA</a>
             <a {...routeLink("videos")}>Videos</a>
             <a {...routeLink("documents")}>Documents</a>
@@ -983,7 +1015,7 @@ function ProofPage({
   );
 }
 
-function WorkPage() {
+function WorkPage({ navigate }: { navigate: (page: Page) => void }) {
   return (
     <section className="section work-section route-section">
       <div className="container">
@@ -1032,12 +1064,28 @@ function WorkPage() {
                   </ul>
                 </div>
                 <div className="work-links">
-                  {item.links.map((link) => (
-                    <a href={link.href} target="_blank" rel="noreferrer" key={link.label}>
-                      {link.icon === "github" ? <Github size={16} /> : <ExternalLink size={16} />}
-                      {link.label}
-                    </a>
-                  ))}
+                  {item.links.map((link) => {
+                    const linkedPage = link.href === routeByPage.git ? "git" : undefined;
+                    return (
+                      <a
+                        href={link.href}
+                        target={linkedPage ? undefined : "_blank"}
+                        rel={linkedPage ? undefined : "noreferrer"}
+                        key={link.label}
+                        onClick={(event) => {
+                          if (!linkedPage || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                            return;
+                          }
+
+                          event.preventDefault();
+                          navigate(linkedPage);
+                        }}
+                      >
+                        {link.icon === "github" ? <Github size={16} /> : <ExternalLink size={16} />}
+                        {link.label}
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             </article>
@@ -1048,7 +1096,16 @@ function WorkPage() {
   );
 }
 
-function ServicesPage() {
+function ServicesPage({ navigate }: { navigate: (page: Page) => void }) {
+  const handleGitClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate("git");
+  };
+
   return (
     <section className="section services-section route-section">
       <div className="container">
@@ -1089,8 +1146,8 @@ function ServicesPage() {
               That specialty becomes a wedge, not a cage.
             </p>
           </div>
-          <a className="text-link" href="https://github.com/edmund-landgraf" target="_blank" rel="noreferrer">
-            Review public work <ArrowRight size={16} />
+          <a className="text-link" href={routeByPage.git} onClick={handleGitClick}>
+            Review curated Git page <ArrowRight size={16} />
           </a>
         </div>
       </div>
@@ -1137,6 +1194,58 @@ function DocumentsPage() {
                       <li key={bullet}><CheckCircle2 size={16} /> {bullet}</li>
                     ))}
                   </ul>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+function GitPage() {
+  return (
+    <section className="section git-section route-section">
+      <div className="container">
+        <div className="section-heading heading-split">
+          <div>
+            <div className="eyebrow eyebrow-dark"><Github size={15} /> CURATED GIT</div>
+            <h1>Public repos, selected for inspection.</h1>
+          </div>
+          <p>
+            A curated in-app layer for repository proof. These three entries are temporary
+            positioning cards; the final list can be edited into a tighter buyer-facing
+            sequence without changing the route.
+          </p>
+        </div>
+
+        <div className="work-grid git-grid">
+          {gitSelections.map((repo, index) => (
+            <article className={index === 0 ? "work-card work-card-featured" : "work-card"} key={repo.repo}>
+              <div className="case-rail" aria-label="Repository metadata">
+                <Github size={18} />
+                <span>Repo</span>
+                <strong>0{index + 1}</strong>
+              </div>
+              <div className="work-content">
+                <div className="case-file-header">
+                  <span className="card-eyebrow">{repo.eyebrow}</span>
+                  <span className="case-status">Public repo</span>
+                </div>
+                <h2>{repo.title}</h2>
+                <p className="work-summary">{repo.summary}</p>
+                <div className="shipped-panel">
+                  <h3>Positioning notes</h3>
+                  <ul>
+                    {repo.details.map((detail) => (
+                      <li key={detail}><CheckCircle2 size={16} /> {detail}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="work-links">
+                  <a href={repo.href} target="_blank" rel="noreferrer">
+                    <Github size={16} /> {repo.repo}
+                  </a>
                 </div>
               </div>
             </article>
@@ -1194,15 +1303,49 @@ function ApproachPage() {
   );
 }
 
-function AboutPage() {
+function AboutPage({ navigate }: { navigate: (page: Page) => void }) {
+  const handleGitClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate("git");
+  };
+
+  const handleDocumentsClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    navigate("documents");
+  };
+
   return (
     <section className="section about-section route-section">
-      <div className="container about-grid">
-        <div>
-          <div className="eyebrow eyebrow-dark">EDMUND LANDGRAF / UNWHELMNET</div>
-          <h1>Direct technical ownership.</h1>
+      <div className="container about-shell">
+        <div className="about-hero-card">
+          <div className="about-heading-block">
+            <div className="eyebrow eyebrow-dark">EDMUND LANDGRAF / UNWHELMNET</div>
+            <h1>Direct technical ownership.</h1>
+            <p>
+              Senior implementation across web applications, APIs, data, AI,
+              infrastructure, and the operational details that make software usable.
+            </p>
+          </div>
+
+          <div className="about-signal-panel" aria-label="About summary">
+            <span className="card-eyebrow">WORKING MODEL</span>
+            <strong>Discovery to deployed system</strong>
+            <p>
+              One technical owner stays close to the workflow, models the boundary,
+              builds the path, and keeps the remaining risk visible.
+            </p>
+          </div>
         </div>
-        <div className="about-copy">
+
+        <div className="about-main-card">
           <p className="about-lead">
             UnwhelmNet is built around direct access to the engineer doing the
             discovery, architecture, and implementation.
@@ -1218,17 +1361,41 @@ function AboutPage() {
             right boundary, demonstrate what works, and be explicit about what still
             needs hardening.
           </p>
-          <div className="about-links">
-            <a href="https://github.com/edmund-landgraf" target="_blank" rel="noreferrer">
-              <Github size={17} /> GitHub portfolio
-            </a>
+
+          <div className="about-capability-grid" aria-label="Core technical lanes">
+            <div>
+              <DatabaseZap size={18} />
+              <span>Data + workflow systems</span>
+            </div>
+            <div>
+              <BrainCircuit size={18} />
+              <span>AI under application controls</span>
+            </div>
+            <div>
+              <CloudCog size={18} />
+              <span>Cloud, VPS, and hybrid deployment</span>
+            </div>
+          </div>
+
+          <div className="about-proof-strip">
+            <div>
+              <span className="card-eyebrow">INSPECT THE WORK</span>
+              <p>Review curated repos or browse the rebuilt technical document lane.</p>
+            </div>
+            <div className="about-links">
+              <a href={routeByPage.git} onClick={handleGitClick}>
+                <Github size={17} /> Git portfolio
+              </a>
+              <a href={routeByPage.documents} onClick={handleDocumentsClick}>
+                <FileSearch size={17} /> Technical documents
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
 function ContactPage() {
   return (
     <section className="contact-section contact-page">
