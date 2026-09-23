@@ -697,10 +697,9 @@ a {
 
 .directory-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 18px 12px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   min-height: 210px;
   padding: 20px 18px;
   border: 1px solid #d7caba;
@@ -750,9 +749,39 @@ a {
   line-height: 1.55;
 }
 
-.directory-card > svg {
-  justify-self: end;
+.directory-routes {
+  display: grid;
+  gap: 6px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.directory-routes button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #eadfce;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--ink-strong);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+
+.directory-routes button svg:last-child {
+  margin-left: auto;
   color: var(--teal);
+}
+
+.directory-routes button:hover {
+  border-color: var(--ink-strong);
+  background: #fff;
 }
 
 .heading-split {
@@ -1909,6 +1938,16 @@ a {
   justify-self: stretch;
   min-height: 54px;
 }
+
+.form-status {
+  margin: 0;
+  padding: 0 22px 8px;
+  color: #1f6b4a;
+}
+
+.form-status.error {
+  color: #9b2c2c;
+}
 footer {
   background: #0c1116;
   color: #c8d3d2;
@@ -2145,7 +2184,6 @@ footer {
   }
 
   .directory-card {
-    grid-template-columns: 1fr auto;
     min-height: 180px;
   }
 

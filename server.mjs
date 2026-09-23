@@ -1,6 +1,7 @@
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { extname, join, normalize, resolve } from "node:path";
 import { createServer } from "node:http";
+import { handleContactSubmit } from "./server/contact-email.mjs";
 
 const root = resolve("dist");
 const port = Number(process.env.PORT ?? 5193);
@@ -37,6 +38,12 @@ createServer((request, response) => {
   if (!request.url) {
     response.writeHead(400);
     response.end("Bad request");
+    return;
+  }
+
+  const requestPath = request.url.split("?")[0];
+  if (request.method === "POST" && requestPath === "/api/contact/submit") {
+    void handleContactSubmit(request, response);
     return;
   }
 

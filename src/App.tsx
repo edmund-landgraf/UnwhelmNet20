@@ -1,4 +1,4 @@
-import { type MouseEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BadgeCheck,
@@ -613,6 +613,33 @@ const pageLinks: PageLink[] = [
   { page: "contact", label: "Contact Us", text: "The original intake flow reskinned for the redesign, ready for endpoint wiring.", icon: Mail },
 ];
 
+const routeGroups: { label: string; text: string; icon: PageLink["icon"]; pages: Page[] }[] = [
+  {
+    label: "Solutions",
+    text: "What gets built: property systems, AI, economics, web apps, and platforms.",
+    icon: Layers3,
+    pages: ["real-estate", "ai-solutions", "ai-economics", "web-design", "platforms"],
+  },
+  {
+    label: "Evidence",
+    text: "Proof you can inspect: case studies, videos, documents, and public repos.",
+    icon: FileSearch,
+    pages: ["case-studies", "videos", "documents", "git"],
+  },
+  {
+    label: "Practice",
+    text: "Who it fits, how the system is drawn, and the skills behind the work.",
+    icon: Route,
+    pages: ["clients", "diagramming", "technical-skills"],
+  },
+  {
+    label: "Start",
+    text: "Scope the work and start the intake.",
+    icon: Mail,
+    pages: ["contact"],
+  },
+];
+
 function pageFromPath(pathname: string): Page {
   const normalized = pathname.replace(/\/+$/, "") || "/";
   const match = Object.entries(routeByPage).find(([, path]) => path === normalized);
@@ -850,15 +877,29 @@ function HomePage({ navigate }: { navigate: (page: Page) => void }) {
             </p>
           </div>
           <div className="directory-grid">
-            {pageLinks.map((link) => (
-              <button className="directory-card" key={link.page} onClick={() => navigate(link.page)}>
-                <span className="directory-icon"><link.icon size={22} /></span>
+            {routeGroups.map((group) => (
+              <article className="directory-card" key={group.label}>
+                <span className="directory-icon"><group.icon size={22} /></span>
                 <span className="directory-copy">
-                  <strong>{link.label}</strong>
-                  <span>{link.text}</span>
+                  <strong>{group.label}</strong>
+                  <span>{group.text}</span>
                 </span>
-                <ArrowRight size={17} />
-              </button>
+                <ul className="directory-routes">
+                  {group.pages.map((pageId) => {
+                    const link = pageLinks.find((item) => item.page === pageId);
+                    if (!link) return null;
+                    return (
+                      <li key={link.page}>
+                        <button type="button" onClick={() => navigate(link.page)}>
+                          <link.icon size={15} />
+                          {link.label}
+                          <ArrowRight size={14} />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </article>
             ))}
           </div>
         </div>
@@ -1396,7 +1437,80 @@ function AboutPage({ navigate }: { navigate: (page: Page) => void }) {
     </section>
   );
 }
+const emptyContactForm = {
+  name: "",
+  email: "",
+  phone: "",
+  company: "",
+  title: "",
+  website: "",
+  message: "",
+  software: [] as string[],
+  goals: [] as string[],
+  softwareOther: "",
+  goalsOther: "",
+  onPremise: "",
+  cloudProviders: [] as string[],
+  cloudOther: "",
+  sendCC: false,
+};
+
 function ContactPage() {
+  const [formData, setFormData] = useState(emptyContactForm);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
+
+  const setField = (field: keyof typeof emptyContactForm, value: string | boolean) => {
+    setFormData((current) => ({ ...current, [field]: value }));
+  };
+
+  const toggleChoice = (field: "software" | "goals" | "cloudProviders", value: string) => {
+    setFormData((current) => ({
+      ...current,
+      [field]: current[field].includes(value)
+        ? current[field].filter((item) => item !== value)
+        : [...current[field], value],
+    }));
+  };
+
+  const submitContact = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const payload = {
+      ...formData,
+      software: [...formData.software, formData.softwareOther].filter(Boolean),
+      goals: [...formData.goals, formData.goalsOther].filter(Boolean),
+      cloudProviders: [...formData.cloudProviders, formData.cloudOther].filter(Boolean),
+      sendCC: formData.sendCC,
+    };
+
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch("/api/contact/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setStatus({ tone: "ok", text: "Message Sent! We'll get back to you within 24 hours." });
+        setFormData(emptyContactForm);
+      } else {
+        setStatus({
+          tone: "error",
+          text: result.error || "There was a problem submitting your form.",
+        });
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      setStatus({ tone: "error", text: "Unable to reach the server. Please try again later." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section className="contact-section contact-page">
       <div className="container contact-page-grid">
@@ -1442,30 +1556,37 @@ function ContactPage() {
       </div>
 
       <div className="container contact-form-layout">
-        <form className="intake-form" aria-label="Project intake form">
+        <form className="intake-form" aria-label="Project intake form" onSubmit={submitContact}>
           <div className="form-action-bar">
             <div>
               <span className="card-eyebrow">PROJECT INTAKE</span>
               <h2>Contact Us</h2>
             </div>
-            <button className="button button-primary" type="button" disabled>Delivery endpoint pending</button>
+            <button className="button button-primary" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : "Send Message"}
+            </button>
           </div>
+          {status && (
+            <p className={status.tone === "error" ? "form-status error" : "form-status"} role="status">
+              {status.text}
+            </p>
+          )}
 
           <section className="form-section">
             <h3>Customer information</h3>
             <div className="form-grid-two">
-              <label>Name *<input required /></label>
-              <label>Email *<input required type="email" /></label>
-              <label>Phone<input /></label>
-              <label>Company *<input required /></label>
-              <label>Title / Role<input /></label>
-              <label>Website<input placeholder="https://" /></label>
+              <label>Name *<input required value={formData.name} onChange={(event) => setField("name", event.target.value)} /></label>
+              <label>Email *<input required type="email" value={formData.email} onChange={(event) => setField("email", event.target.value)} /></label>
+              <label>Phone<input value={formData.phone} onChange={(event) => setField("phone", event.target.value)} /></label>
+              <label>Company *<input required value={formData.company} onChange={(event) => setField("company", event.target.value)} /></label>
+              <label>Title / Role<input value={formData.title} onChange={(event) => setField("title", event.target.value)} /></label>
+              <label>Website<input placeholder="https://" value={formData.website} onChange={(event) => setField("website", event.target.value)} /></label>
             </div>
           </section>
 
           <section className="form-section">
             <h3>Tell us more about your project</h3>
-            <textarea required rows={6} placeholder="Describe your current challenges..." />
+            <textarea required rows={6} placeholder="Describe your current challenges..." value={formData.message} onChange={(event) => setField("message", event.target.value)} />
           </section>
 
           <section className="form-section">
@@ -1473,17 +1594,18 @@ function ContactPage() {
             <div className="choice-grid">
               {projectGoals.map((goal) => (
                 <label className="choice-pill" key={goal}>
-                  <input type="checkbox" />
+                  <input type="checkbox" checked={formData.goals.includes(goal)} onChange={() => toggleChoice("goals", goal)} />
                   <span>{goal}</span>
                 </label>
               ))}
             </div>
+            <input className="full-input" placeholder="Other goals..." value={formData.goalsOther} onChange={(event) => setField("goalsOther", event.target.value)} />
           </section>
 
           <section className="form-section">
             <h3>On-premise / VPS systems</h3>
             <p>If you host any applications or databases on your own servers or a VPS, describe them below.</p>
-            <textarea rows={4} placeholder="Example: SQL Server on Windows VPS, Docker on Ubuntu, internal IIS apps..." />
+            <textarea rows={4} placeholder="Example: SQL Server on Windows VPS, Docker on Ubuntu, internal IIS apps..." value={formData.onPremise} onChange={(event) => setField("onPremise", event.target.value)} />
           </section>
 
           <section className="form-section">
@@ -1491,12 +1613,12 @@ function ContactPage() {
             <div className="choice-grid">
               {cloudProviders.map((provider) => (
                 <label className="choice-pill" key={provider}>
-                  <input type="checkbox" />
+                  <input type="checkbox" checked={formData.cloudProviders.includes(provider)} onChange={() => toggleChoice("cloudProviders", provider)} />
                   <span>{provider}</span>
                 </label>
               ))}
             </div>
-            <input className="full-input" placeholder="Other cloud systems..." />
+            <input className="full-input" placeholder="Other cloud systems..." value={formData.cloudOther} onChange={(event) => setField("cloudOther", event.target.value)} />
           </section>
 
           <section className="form-section">
@@ -1507,22 +1629,24 @@ function ContactPage() {
                   <h4>{group}</h4>
                   {systems.map((system) => (
                     <label className="choice-pill compact" key={`${group}-${system}`}>
-                      <input type="checkbox" />
+                      <input type="checkbox" checked={formData.software.includes(system)} onChange={() => toggleChoice("software", system)} />
                       <span>{system}</span>
                     </label>
                   ))}
                 </div>
               ))}
             </div>
-            <input className="full-input" placeholder="Other platforms..." />
+            <input className="full-input" placeholder="Other platforms..." value={formData.softwareOther} onChange={(event) => setField("softwareOther", event.target.value)} />
           </section>
 
           <label className="send-copy-row">
-            <input type="checkbox" />
+            <input type="checkbox" checked={formData.sendCC} onChange={(event) => setField("sendCC", event.target.checked)} />
             <span>Send me a copy of this inquiry</span>
           </label>
 
-          <button className="button button-primary form-submit" type="button" disabled>Delivery endpoint pending</button>
+          <button className="button button-primary form-submit" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </button>
         </form>
       </div>
     </section>
