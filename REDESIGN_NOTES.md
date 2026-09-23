@@ -14,8 +14,7 @@ The old site led with broad consultancy positioning and made visitors work to fi
 
 ## What stayed
 
-- Deep purple / indigo UnwhelmNet palette.
-- Sora display type, Inter body type, JetBrains Mono technical accents.
+- Sora display type, Inter body type, JetBrains Mono technical accents, and a restrained warm/teal engineering palette.
 - "Unwhelm your tech stack" brand language.
 - Property-management integration specialization.
 - AI, API, data, cloud and automation themes.

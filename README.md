@@ -1,8 +1,8 @@
 # UnwhelmNet 2.0
 
-A proof-first redesign of [unwhelm.net](https://unwhelm.net).
+A proof-first redesign of unwhelm.net.
 
-This version keeps the established UnwhelmNet visual language—deep purple gradients, Sora/Inter typography, technical accents—but changes the information architecture so working systems and demonstrations appear before broad service marketing.
+This version keeps the established UnwhelmNet technical tone—Sora/Inter typography, mono accents, restrained color, and engineering-board surfaces—but changes the information architecture so working systems and demonstrations appear before broad service marketing.
 
 ## Design goals
 
@@ -26,6 +26,10 @@ Production build:
 npm run build
 npm run preview
 ```
+
+## Route parity
+
+Legacy /videos and /documents paths are rebuilt as first-class routes in this app so production users do not need to leave the new site for old content pages. Copy and wording can be expanded later without changing the route contract.
 
 ## Video assets
 

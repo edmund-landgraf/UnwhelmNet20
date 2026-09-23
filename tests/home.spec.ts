@@ -27,11 +27,14 @@ test("homepage is a focused route entry point", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Watch the engineering, then judge the fit." })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Case studies with the problem left in." })).toHaveCount(0);
 
-  await expect(page.locator(".directory-card").filter({ hasText: "Proof of work" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Selected work/i })).toBeVisible();
+  await expect(page.locator(".directory-card").filter({ hasText: "Real Estate Solutions" })).toBeVisible();
+  await expect(page.locator(".directory-card").filter({ hasText: "AI Solutions" })).toBeVisible();
+  await expect(page.locator(".directory-card").filter({ hasText: "Technical Skills" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Proof" })).toHaveAttribute("href", "/proof");
   await expect(page.getByRole("link", { name: "Work" })).toHaveAttribute("href", "/work");
   await expect(page.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/services");
+  await expect(page.locator(".directory-card").filter({ hasText: "Videos" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Documents/ })).toBeVisible();
   await expect(page.getByRole("link", { name: "Approach" })).toHaveAttribute("href", "/approach");
 
   await page.screenshot({ path: "test-results/home-desktop.png", fullPage: true });
@@ -51,6 +54,13 @@ test("primary navigation opens separate pages instead of anchors", async ({ page
   await page.getByRole("link", { name: "Services" }).click();
   await expect(page).toHaveURL(/\/services$/);
   await expect(page.getByRole("heading", { level: 1, name: "Not a stack. A set of boundary problems." })).toBeVisible();
+
+  await page.goto("/videos");
+  await expect(page.getByRole("heading", { level: 1, name: "Video library" })).toBeVisible();
+
+  await page.goto("/documents");
+  await expect(page.getByRole("heading", { level: 1, name: "Documents rebuilt into the new site." })).toBeVisible();
+  await expect(page.getByText("Propertyware and AppFolio integration notes")).toBeVisible();
 
   await page.getByRole("link", { name: "Approach" }).click();
   await expect(page).toHaveURL(/\/approach$/);
@@ -73,8 +83,8 @@ test("technical proof links are inspectable and externally targeted", async ({ p
 
   await page.goto("/services");
   await expect(
-    page.getByRole("link", { name: /Review integration documents/i })
-  ).toHaveAttribute("href", "https://unwhelm.net/documents");
+    page.getByRole("link", { name: /Review public work/i })
+  ).toHaveAttribute("href", "https://github.com/edmund-landgraf");
 });
 
 test("video demo selector swaps the working source", async ({ page }) => {
@@ -82,11 +92,6 @@ test("video demo selector swaps the working source", async ({ page }) => {
 
   const video = page.locator("video").first();
   await expect(video).toHaveAttribute("src", expectedVideos[0]);
-  await expect(page.getByRole("link", { name: /Open the full video library/i })).toHaveAttribute(
-    "href",
-    "https://unwhelm.net/videos"
-  );
-
   await page.getByRole("tab", { name: /Building a local RAG application/i }).click();
   await expect(video).toHaveAttribute("src", expectedVideos[1]);
 
@@ -123,4 +128,31 @@ test("mobile navigation routes to separate pages", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Case studies with the problem left in." })).toBeVisible();
 
   await page.screenshot({ path: "test-results/work-mobile.png", fullPage: true });
+});
+
+test("rebuilt parity routes avoid old-site page links", async ({ page }) => {
+  for (const route of ["/", "/real-estate", "/ai-solutions", "/ai-economics", "/web-design", "/platforms", "/case-studies", "/clients", "/diagramming", "/technical-skills", "/proof", "/videos", "/work", "/services", "/documents", "/approach", "/about", "/contact"]) {
+    await page.goto(route);
+    const oldSitePageLinks = page.locator('a[href^="https://unwhelm.net"]:not([href*="/assets/"])');
+    await expect(oldSitePageLinks).toHaveCount(0);
+  }
+});
+test("legacy navigation routes are rebuilt in the redesign", async ({ page }) => {
+  const routes = [
+    ["/real-estate", "Property-management systems, rebuilt around operational proof."],
+    ["/ai-solutions", "AI under application controls."],
+    ["/ai-economics", "Make the cost model visible before the build gets expensive."],
+    ["/web-design", "Modern web applications that fit the workflow."],
+    ["/platforms", "Platform boundaries made explicit."],
+    ["/case-studies", "Case studies with the problem left in."],
+    ["/clients", "Built for businesses with real workflows and limited patience for theater."],
+    ["/diagramming", "Architecture diagrams that clarify ownership."],
+    ["/technical-skills", "Senior implementation across software, data, AI, and infrastructure."],
+  ] as const;
+
+  for (const [route, heading] of routes) {
+    await page.goto(route);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+    await expect(page.getByText("Rebuilt route").first()).toBeVisible();
+  }
 });
