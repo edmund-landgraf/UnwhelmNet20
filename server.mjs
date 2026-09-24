@@ -20,6 +20,7 @@ const mimeTypes = new Map([
   [".ico", "image/x-icon"],
   [".mp4", "video/mp4"],
   [".txt", "text/plain; charset=utf-8"],
+  [".md", "text/markdown; charset=utf-8"],
 ]);
 
 function resolveFile(urlPath) {

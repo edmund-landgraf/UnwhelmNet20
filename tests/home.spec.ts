@@ -59,15 +59,15 @@ test("primary navigation opens separate pages instead of anchors", async ({ page
   await expect(page.getByRole("heading", { level: 1, name: "Video library" })).toBeVisible();
 
   await page.goto("/documents");
-  await expect(page.getByRole("heading", { level: 1, name: "Documents rebuilt into the new site." })).toBeVisible();
-  await expect(page.getByText("Propertyware and AppFolio integration notes")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Document library." })).toBeVisible();
+  await expect(page.getByText("Sheet to Propertyware Building Create")).toBeVisible();
 
   await page.goto("/about");
   const technicalDocuments = page.getByRole("link", { name: "Technical documents" });
   await expect(technicalDocuments).toHaveAttribute("href", "/documents");
   await technicalDocuments.click();
   await expect(page).toHaveURL(/\/documents$/);
-  await expect(page.getByRole("heading", { level: 1, name: "Documents rebuilt into the new site." })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Document library." })).toBeVisible();
 
   await page.goto("/git");
   await expect(page.getByRole("heading", { level: 1, name: "Public repos, selected for inspection." })).toBeVisible();

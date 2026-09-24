@@ -1,4 +1,5 @@
 import { type FormEvent, type MouseEvent, useEffect, useMemo, useState } from "react";
+import { documentFromSearch, DocumentsPage, MarkdownViewer } from "./documents";
 import {
   ArrowRight,
   BadgeCheck,
@@ -28,7 +29,7 @@ import {
   X,
 } from "lucide-react";
 
-type Page = "home" | "real-estate" | "ai-solutions" | "ai-economics" | "web-design" | "platforms" | "case-studies" | "clients" | "diagramming" | "technical-skills" | "proof" | "videos" | "work" | "services" | "documents" | "git" | "approach" | "about" | "contact";
+type Page = "home" | "real-estate" | "ai-solutions" | "ai-economics" | "web-design" | "platforms" | "case-studies" | "clients" | "diagramming" | "technical-skills" | "proof" | "videos" | "work" | "services" | "documents" | "markdown-viewer" | "git" | "approach" | "about" | "contact";
 
 type Demo = {
   id: string;
@@ -73,6 +74,7 @@ const routeByPage: Record<Page, string> = {
   work: "/work",
   services: "/services",
   documents: "/documents",
+  "markdown-viewer": "/markdown-viewer",
   git: "/git",
   approach: "/approach",
   about: "/about",
@@ -215,29 +217,6 @@ const work: WorkItem[] = [
   },
 ];
 
-const documentLibrary = [
-  {
-    eyebrow: "PROPERTY MANAGEMENT",
-    title: "Propertyware and AppFolio integration notes",
-    summary:
-      "A rebuilt home for the old technical-document lane: data movement, reporting, documents, leasing workflows, and operational automation around property-management platforms.",
-    bullets: ["API and export boundaries", "SQL reporting and reconciliation", "Document and leasing workflow automation"],
-  },
-  {
-    eyebrow: "AI + DATA",
-    title: "RAG and semantic-search architecture",
-    summary:
-      "Notes for retrieval, embeddings, source ingestion, deterministic filters, and model boundaries behind AI-assisted applications.",
-    bullets: ["Source-content ownership", "Embedding and retrieval flow", "Local and commercial model boundaries"],
-  },
-  {
-    eyebrow: "APIS + DEPLOYMENT",
-    title: "Application integration playbook",
-    summary:
-      "A place for the rebuilt API, deployment, authentication, and cloud/on-prem handoff material that used to live on supporting pages.",
-    bullets: ["REST service boundaries", "Authentication and credentials", "Linux, Windows, VPS, and hybrid deployment"],
-  },
-];
 const gitSelections = [
   {
     eyebrow: "STRUCTURED CONTENT PLATFORM",
@@ -355,22 +334,22 @@ const outcomes = [
 
 const engagement = [
   {
-    number: "01",
+    mark: "look",
     title: "Discover the real workflow",
     text: "Start with the business process, source systems, ownership rules, and constraints before choosing technology.",
   },
   {
-    number: "02",
+    mark: "fence",
     title: "Design the boundary",
     text: "Define what each system owns, how data is translated, where authentication lives, and what happens when dependencies fail.",
   },
   {
-    number: "03",
+    mark: "prove",
     title: "Build something demonstrable",
     text: "Move from architecture to a working integration, application, or prototype that stakeholders can actually inspect.",
   },
   {
-    number: "04",
+    mark: "brief",
     title: "Explain it at the right altitude",
     text: "Discuss outcomes with business leaders, contracts with architects, and implementation details with engineers.",
   },
@@ -648,6 +627,7 @@ function pageFromPath(pathname: string): Page {
 
 function App() {
   const [page, setPage] = useState<Page>(() => pageFromPath(window.location.pathname));
+  const [locationSearch, setLocationSearch] = useState(() => window.location.search);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDemoId, setActiveDemoId] = useState(demos[0].id);
   const activeDemo = useMemo(
@@ -656,17 +636,22 @@ function App() {
   );
 
   useEffect(() => {
-    const handlePopState = () => setPage(pageFromPath(window.location.pathname));
+    const handlePopState = () => {
+      setPage(pageFromPath(window.location.pathname));
+      setLocationSearch(window.location.search);
+    };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const navigate = (nextPage: Page) => {
-    const nextPath = routeByPage[nextPage];
-    if (window.location.pathname !== nextPath) {
+  const navigate = (nextPage: Page, search = "") => {
+    const query = search ? (search.startsWith("?") ? search : `?${search}`) : "";
+    const nextPath = `${routeByPage[nextPage]}${query}`;
+    if (`${window.location.pathname}${window.location.search}` !== nextPath) {
       window.history.pushState({ page: nextPage }, "", nextPath);
     }
     setPage(nextPage);
+    setLocationSearch(query);
     setMobileOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -740,7 +725,15 @@ function App() {
         )}
         {page === "work" && <WorkPage navigate={navigate} />}
         {page === "services" && <ServicesPage navigate={navigate} />}
-        {page === "documents" && <DocumentsPage />}
+        {page === "documents" && (
+          <DocumentsPage onOpen={(filename) => navigate("markdown-viewer", `file=${encodeURIComponent(filename)}`)} />
+        )}
+        {page === "markdown-viewer" && (
+          <MarkdownViewer
+            initialFilename={documentFromSearch(locationSearch).filename}
+            onSelect={(filename) => navigate("markdown-viewer", `file=${encodeURIComponent(filename)}`)}
+          />
+        )}
         {page === "git" && <GitPage />}
         {page === "approach" && <ApproachPage />}
         {page === "about" && <AboutPage navigate={navigate} />}
@@ -1197,53 +1190,6 @@ function ServicesPage({ navigate }: { navigate: (page: Page) => void }) {
 }
 
 
-function DocumentsPage() {
-  return (
-    <section className="section documents-section route-section">
-      <div className="container">
-        <div className="section-heading heading-split">
-          <div>
-            <div className="eyebrow eyebrow-dark"><FileSearch size={15} /> TECHNICAL DOCUMENTS</div>
-            <h1>Documents rebuilt into the new site.</h1>
-          </div>
-          <p>
-            The old document route now has a new-site home. These entries preserve
-            the major content lanes for parity; the wording can be tightened as the
-            source material is edited back in.
-          </p>
-        </div>
-
-        <div className="work-grid document-grid">
-          {documentLibrary.map((document, index) => (
-            <article className={index === 0 ? "work-card work-card-featured" : "work-card"} key={document.title}>
-              <div className="case-rail" aria-label="Document metadata">
-                <FileSearch size={18} />
-                <span>Document</span>
-                <strong>0{index + 1}</strong>
-              </div>
-              <div className="work-content">
-                <div className="case-file-header">
-                  <span className="card-eyebrow">{document.eyebrow}</span>
-                  <span className="case-status">Rebuilt route</span>
-                </div>
-                <h2>{document.title}</h2>
-                <p className="work-summary">{document.summary}</p>
-                <div className="shipped-panel">
-                  <h3>Coverage</h3>
-                  <ul>
-                    {document.bullets.map((bullet) => (
-                      <li key={bullet}><CheckCircle2 size={16} /> {bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 function GitPage() {
   return (
     <section className="section git-section route-section">
@@ -1312,8 +1258,8 @@ function ApproachPage() {
 
           <div className="engagement-list">
             {engagement.map((step) => (
-              <article key={step.number}>
-                <span>{step.number}</span>
+              <article key={step.mark}>
+                <span>{step.mark}</span>
                 <div>
                   <h2>{step.title}</h2>
                   <p>{step.text}</p>
